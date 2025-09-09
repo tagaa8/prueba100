@@ -93,7 +93,9 @@ const getRooms = async (req, res) => {
     }
 
     query += ' ORDER BY r.created_at DESC LIMIT ? OFFSET ?';
-    queryParams.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
+    const limitInt = parseInt(limit) || 10;
+    const pageInt = parseInt(page) || 1;
+    queryParams.push(limitInt, (pageInt - 1) * limitInt);
 
     const [rows] = await promisePool.execute(query, queryParams);
 

@@ -75,7 +75,7 @@ const getApartments = async (req, res) => {
 
     if (rooms) {
       query += ' AND a.total_rooms >= ?';
-      queryParams.push(parseInt(rooms));
+      queryParams.push(parseInt(rooms) || 1);
     }
 
     if (furnished === 'true') {
@@ -91,7 +91,9 @@ const getApartments = async (req, res) => {
     }
 
     query += ' ORDER BY a.created_at DESC LIMIT ? OFFSET ?';
-    queryParams.push(parseInt(limit), (parseInt(page) - 1) * parseInt(limit));
+    const limitInt = parseInt(limit) || 10;
+    const pageInt = parseInt(page) || 1;
+    queryParams.push(limitInt, (pageInt - 1) * limitInt);
 
     const [rows] = await promisePool.execute(query, queryParams);
 

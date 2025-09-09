@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomMates - Encuentra tu hogar perfecto</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-home"></i>
+                <span>RoomMates</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-link" onclick="showSection('home')">Inicio</a>
+                <a href="#" class="nav-link" onclick="showSection('apartments')">Apartamentos</a>
+                <a href="#" class="nav-link" onclick="showSection('rooms')">Habitaciones</a>
+                <a href="#" class="nav-link" onclick="showSection('roommates')">Compañeros</a>
+                <a href="#" class="nav-link" onclick="showSection('compare')">Comparar</a>
+            </div>
+            <div class="nav-auth" id="nav-auth">
+                <button class="btn btn-outline" onclick="showAuthModal('login')">Iniciar Sesión</button>
+                <button class="btn btn-primary" onclick="showAuthModal('register')">Registrarse</button>
+            </div>
+            <div class="nav-user" id="nav-user" style="display: none;">
+                <span id="user-name"></span>
+                <button class="btn btn-outline" onclick="logout()">Salir</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Encuentra tu hogar perfecto</h1>
+            <p>Busca apartamentos, subalquila habitaciones y conecta con compañeros ideales</p>
+            <div class="hero-search">
+                <input type="text" placeholder="¿Dónde quieres vivir?" id="hero-search-input">
+                <button class="btn btn-primary" onclick="searchFromHero()">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" id="apartments-count">0</span>
+                    <span class="stat-label">Apartamentos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="rooms-count">0</span>
+                    <span class="stat-label">Habitaciones</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="users-count">0</span>
+                    <span class="stat-label">Usuarios</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apartments Section -->
+    <section id="apartments" class="section" style="display: none;">
+        <div class="container">
+            <h2>Apartamentos Disponibles</h2>
+            <div class="filters">
+                <input type="text" placeholder="Ciudad" id="city-filter">
+                <input type="number" placeholder="Precio mínimo" id="min-price">
+                <input type="number" placeholder="Precio máximo" id="max-price">
+                <select id="rooms-filter">
+                    <option value="">Habitaciones</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                </select>
+                <button class="btn btn-primary" onclick="filterApartments()">Filtrar</button>
+            </div>
+            <div class="listings-grid" id="apartments-grid">
+                <!-- Apartments will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Rooms Section -->
+    <section id="rooms" class="section" style="display: none;">
+        <div class="container">
+            <h2>Habitaciones Disponibles</h2>
+            <div class="filters">
+                <input type="text" placeholder="Ciudad" id="rooms-city-filter">
+                <input type="number" placeholder="Precio mínimo" id="rooms-min-price">
+                <input type="number" placeholder="Precio máximo" id="rooms-max-price">
+                <select id="room-type-filter">
+                    <option value="">Tipo de habitación</option>
+                    <option value="bedroom">Habitación privada</option>
+                    <option value="shared_bedroom">Habitación compartida</option>
+                    <option value="studio">Studio</option>
+                </select>
+                <button class="btn btn-primary" onclick="filterRooms()">Filtrar</button>
+            </div>
+            <div class="listings-grid" id="rooms-grid">
+                <!-- Rooms will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Roommates Section -->
+    <section id="roommates" class="section" style="display: none;">
+        <div class="container">
+            <h2>Encuentra tu Compañero Ideal</h2>
+            <div class="roommates-content" id="roommates-content">
+                <div class="auth-required">
+                    <p>Inicia sesión para encontrar compañeros compatibles</p>
+                    <button class="btn btn-primary" onclick="showAuthModal('login')">Iniciar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compare Section -->
+    <section id="compare" class="section" style="display: none;">
+        <div class="container">
+            <h2>Comparar Apartamentos</h2>
+            <div class="compare-content">
+                <div class="compare-selection" id="compare-selection">
+                    <p>Selecciona apartamentos para comparar desde la lista de apartamentos</p>
+                </div>
+                <div class="comparison-table" id="comparison-table" style="display: none;">
+                    <!-- Comparison will be shown here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <div id="login-form" class="auth-form">
+                <h3>Iniciar Sesión</h3>
+                <form onsubmit="login(event)">
+                    <input type="email" placeholder="Email" required id="login-email">
+                    <input type="password" placeholder="Contraseña" required id="login-password">
+                    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                </form>
+                <p>¿No tienes cuenta? <a href="#" onclick="switchAuthForm('register')">Regístrate</a></p>
+            </div>
+            <div id="register-form" class="auth-form" style="display: none;">
+                <h3>Registrarse</h3>
+                <form onsubmit="register(event)">
+                    <input type="text" placeholder="Nombre" required id="register-first-name">
+                    <input type="text" placeholder="Apellido" required id="register-last-name">
+                    <input type="email" placeholder="Email" required id="register-email">
+                    <input type="password" placeholder="Contraseña" required id="register-password">
+                    <input type="tel" placeholder="Teléfono" id="register-phone">
+                    <button type="submit" class="btn btn-primary">Registrarse</button>
+                </form>
+                <p>¿Ya tienes cuenta? <a href="#" onclick="switchAuthForm('login')">Inicia sesión</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast" class="toast"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
